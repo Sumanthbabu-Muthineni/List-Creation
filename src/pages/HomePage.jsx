@@ -8,24 +8,37 @@ import styled from 'styled-components';
 
 const Container = styled.div`
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  align-items: flex-start;
   padding: 20px;
-  margin: 20px;
-
-  @media (max-width: 768px) {
-    flex-direction: column;
-  }
+  background-color: #f8f9fa;
 `;
 
 const Title = styled.h1`
-  text-align: center;
-  color: #333;
+  text-align: left;
+  color: #343a40;
   margin-bottom: 20px;
 `;
 
+const Frame = styled.div`
+  display: flex;
+  width: 100%;
+  max-width: 800px;
+  height: 400px;
+  overflow: hidden;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background-color: #F2F7FC;
+`;
+
+const ScrollableListContainer = styled.div`  width: 50%;
+  max-height: 100%;
+  overflow-y: auto;
+  padding: 10px;
+`;
+
 const CreateListButton = styled.button`
-  display: block; 
-  margin: 20px auto; 
+  margin-bottom: 20px;
   padding: 10px 20px;
   background-color: #007bff;
   color: white;
@@ -68,28 +81,28 @@ const HomePage = () => {
   const list2 = lists.filter((list) => list.list_number === 2);
 
   return (
-    <div>
+    <Container>
       <Title>List Creation</Title>
       <CreateListButton onClick={handleCreateList}>Create a new list</CreateListButton>
-      <Container>
-        <div style={{ width: '48%' }}>
+      <Frame>
+        <ScrollableListContainer>
           <ListContainer
             listNumber={1}
             items={list1}
             onSelect={handleListSelection}
             selected={selectedLists}
           />
-        </div>
-        <div style={{ width: '48%' }}>
+        </ScrollableListContainer>
+        <ScrollableListContainer>
           <ListContainer
             listNumber={2}
             items={list2}
             onSelect={handleListSelection}
             selected={selectedLists}
           />
-        </div>
-      </Container>
-    </div>
+        </ScrollableListContainer>
+      </Frame>
+    </Container>
   );
 };
 

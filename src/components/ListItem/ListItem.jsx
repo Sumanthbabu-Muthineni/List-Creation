@@ -15,9 +15,7 @@ const Item = styled.div`
 
   background-color: ${({ isSelected }) => (isSelected ? '#e0f7fa' : 'transparent')};
 
-  &:hover {
-    background-color: #f1f1f1;
-  }
+ 
 
   @media (max-width: 768px) {
     flex-direction: column;

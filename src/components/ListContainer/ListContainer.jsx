@@ -3,10 +3,19 @@ import styled from 'styled-components';
 import ListItem from '../ListItem/ListItem';
 
 const Container = styled.div`
+  margin: 10px 0;
+`;
+
+const Title = styled.h3`
+  margin-bottom: 12px;
+  font-size: 1.5rem;
+  color: #333;
+`;
+
+const Card = styled.div`
   border: 1px solid #e0e0e0;
   border-radius: 8px;
-  padding: 16px;
-  margin: 16px 0;
+  padding: 10px;
   background-color: #ffffff;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: box-shadow 0.3s;
@@ -14,17 +23,6 @@ const Container = styled.div`
   &:hover {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   }
-
-  @media (max-width: 768px) {
-    width: 100%;
-    margin: 8px 0;
-  }
-`;
-
-const Title = styled.h3`
-  margin-bottom: 12px;
-  font-size: 1.5rem;
-  color: #333;
 `;
 
 const CheckboxLabel = styled.label`
@@ -44,14 +42,15 @@ const ListContainer = ({ listNumber, items, onSelect, selected }) => {
         />
         List {listNumber}
       </CheckboxLabel>
-      <Title>List {listNumber}</Title>
+      
       {items.map((item) => (
-        <ListItem
-          key={item.id}
-          item={item}
-          onSelect={onSelect}
-          isSelected={selected.includes(item.id)}
-        />
+        <Card key={item.id}>
+          <ListItem
+            item={item}
+            onSelect={onSelect}
+            isSelected={selected.includes(item.id)}
+          />
+        </Card>
       ))}
     </Container>
   );
