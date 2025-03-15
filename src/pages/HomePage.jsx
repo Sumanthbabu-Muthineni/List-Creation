@@ -6,22 +6,30 @@ import ErrorView from '../components/ErrorView/ErrorView';
 import ListContainer from '../components/ListContainer/ListContainer';
 import styled from 'styled-components';
 
-const Container = styled.div`
+const CenteredContainer = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
+  justify-content: center;
   padding: 20px;
   background-color: #f8f9fa;
+  width: 100%;
 `;
 
 const Title = styled.h1`
-  text-align: left;
+  text-align: center;
   color: #343a40;
   margin-bottom: 20px;
 `;
 
+const ButtonContainer = styled.div`
+  margin-bottom: 20px;
+  text-align: center;
+`;
+
 const Frame = styled.div`
   display: flex;
+  flex-direction: row;
   width: 100%;
   max-width: 800px;
   height: 400px;
@@ -29,16 +37,33 @@ const Frame = styled.div`
   border: 1px solid #e0e0e0;
   border-radius: 8px;
   background-color: #F2F7FC;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    height: auto;
+  }
+
+  @media (min-width: 768px) {
+    height: 500px;
+  }
+
+  @media (min-width: 1200px) {
+    height: 600px;
+  }
 `;
 
-const ScrollableListContainer = styled.div`  width: 50%;
+const ScrollableListContainer = styled.div`
+  width: 100%;
   max-height: 100%;
   overflow-y: auto;
   padding: 10px;
+
+  @media (max-width: 768px) {
+    padding: 15px;
+  }
 `;
 
 const CreateListButton = styled.button`
-  margin-bottom: 20px;
   padding: 10px 20px;
   background-color: #007bff;
   color: white;
@@ -81,9 +106,13 @@ const HomePage = () => {
   const list2 = lists.filter((list) => list.list_number === 2);
 
   return (
-    <Container>
-      <Title>List Creation</Title>
-      <CreateListButton onClick={handleCreateList}>Create a new list</CreateListButton>
+    <>
+      <CenteredContainer>
+        <Title>List Creation</Title>
+        <ButtonContainer>
+          <CreateListButton onClick={handleCreateList}>Create a new list</CreateListButton>
+        </ButtonContainer>
+      </CenteredContainer>
       <Frame>
         <ScrollableListContainer>
           <ListContainer
@@ -102,7 +131,7 @@ const HomePage = () => {
           />
         </ScrollableListContainer>
       </Frame>
-    </Container>
+    </>
   );
 };
 

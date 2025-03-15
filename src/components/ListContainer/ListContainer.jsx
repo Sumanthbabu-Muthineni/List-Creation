@@ -2,13 +2,15 @@ import React from 'react';
 import styled from 'styled-components';
 import ListItem from '../ListItem/ListItem';
 
+
 const Container = styled.div`
   margin: 10px 0;
+  padding:10px;
 `;
 
 const Title = styled.h3`
   margin-bottom: 12px;
-  font-size: 1.5rem;
+  font-size: 1rem;
   color: #333;
 `;
 
@@ -40,13 +42,14 @@ const ListContainer = ({ listNumber, items, onSelect, selected }) => {
           checked={selected.includes(listNumber)}
           onChange={() => onSelect(listNumber)}
         />
-        List {listNumber}
+      <Title>List {listNumber}</Title>
       </CheckboxLabel>
       
       {items.map((item) => (
         <Card key={item.id}>
           <ListItem
             item={item}
+            listNumber={listNumber}
             onSelect={onSelect}
             isSelected={selected.includes(item.id)}
           />
