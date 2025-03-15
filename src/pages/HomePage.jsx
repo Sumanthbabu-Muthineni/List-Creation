@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getLists } from '../redux/slices/listSlice';
+import { getLists, moveItem } from '../redux/slices/listSlice';
 import Loader from '../components/Loader/Loader';
 import ErrorView from '../components/ErrorView/ErrorView';
 import ListContainer from '../components/ListContainer/ListContainer';
@@ -80,10 +80,21 @@ const HomePage = () => {
   const dispatch = useDispatch();
   const { lists = [], status, error } = useSelector((state) => state.list);
   const [selectedLists, setSelectedLists] = useState([]);
+  const [isCreatingList, setIsCreatingList] = useState(false);
+  const [newListItems, setNewListItems] = useState([]);
 
   useEffect(() => {
     dispatch(getLists());
   }, [dispatch]);
+
+  // Debug the lists data
+  useEffect(() => {
+    console.log('Current lists from API:', lists);
+    if (lists.length > 0) {
+      console.log('First list structure:', JSON.stringify(lists[0], null, 2));
+      console.log('List numbers available:', lists.map(list => list.list_number || list.id));
+    }
+  }, [lists]);
 
   const handleListSelection = (listId) => {
     setSelectedLists((prev) =>
@@ -96,38 +107,93 @@ const HomePage = () => {
       alert('You should select exactly 2 lists to create a new list');
       return;
     }
-   
+    setIsCreatingList(true);
+    setNewListItems([]);
+  };
+
+  const handleMoveToNewList = (item, fromListId) => {
+    console.log('Moving to new list:', { item, fromListId });
+    dispatch(moveItem({ fromListId, toListId: 3, itemId: item.id }));
+  };
+
+  const handleMoveToOriginalList = (item, toListId) => {
+    console.log('Moving to original list:', { item, toListId });
+    dispatch(moveItem({ fromListId: 3, toListId, itemId: item.id }));
+  };
+
+  const handleCancel = () => {
+    setIsCreatingList(false);
+    setSelectedLists([]);
+    setNewListItems([]);
+  };
+
+  const handleUpdate = () => {
+    // When update is clicked, we keep the items in list3 where they are
+    // This effectively saves the current state
+    setIsCreatingList(false);
+    setSelectedLists([]);
+    setNewListItems([]);
+    
+    console.log('List updated successfully');
   };
 
   if (status === 'loading') return <Loader />;
   if (status === 'failed') return <ErrorView error={error} />;
 
-  const list1 = lists.filter((list) => list.list_number === 1);
-  const list2 = lists.filter((list) => list.list_number === 2);
+  // Filter lists by list_number
+  const list1 = lists.find(list => list.list_number === 1) || { id: 1, list_number: 1, items: [] };
+  const list2 = lists.find(list => list.list_number === 2) || { id: 2, list_number: 2, items: [] };
+  const list3 = lists.find(list => list.list_number === 3) || { id: 3, list_number: 3, items: [] };
+
+  console.log('List 1 items:', list1.items);
+  console.log('List 2 items:', list2.items);
+  console.log('List 3 items:', list3.items);
 
   return (
     <>
       <CenteredContainer>
-        <Title>List Creation</Title>
+        <Title>{isCreatingList ? 'List Creation' : 'List Selection'}</Title>
         <ButtonContainer>
-          <CreateListButton onClick={handleCreateList}>Create a new list</CreateListButton>
+          {isCreatingList ? (
+            <>
+              <CreateListButton onClick={handleUpdate}>Update</CreateListButton>
+              <CreateListButton onClick={handleCancel}>Cancel</CreateListButton>
+            </>
+          ) : (
+            <CreateListButton onClick={handleCreateList}>Create a new list</CreateListButton>
+          )}
         </ButtonContainer>
       </CenteredContainer>
       <Frame>
         <ScrollableListContainer>
           <ListContainer
             listNumber={1}
-            items={list1}
+            items={list1.items}
             onSelect={handleListSelection}
             selected={selectedLists}
+            onMoveToNewList={handleMoveToNewList}
+            isCreatingList={isCreatingList}
           />
         </ScrollableListContainer>
+        {isCreatingList && (
+          <ScrollableListContainer>
+            <ListContainer
+              listNumber={3}
+              items={list3.items}
+              onSelect={handleMoveToOriginalList}
+              selected={[]}
+              isCreatingList={isCreatingList}
+            />
+          </ScrollableListContainer>
+        )}
         <ScrollableListContainer>
           <ListContainer
             listNumber={2}
-            items={list2}
+            items={list2.items}
             onSelect={handleListSelection}
             selected={selectedLists}
+            onMoveToNewList={handleMoveToNewList}
+            isCreatingList={isCreatingList}
           />
         </ScrollableListContainer>
       </Frame>

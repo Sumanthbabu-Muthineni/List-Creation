@@ -33,7 +33,13 @@ const CheckboxLabel = styled.label`
   margin-bottom: 10px; 
 `;
 
-const ListContainer = ({ listNumber, items, onSelect, selected }) => {
+
+const ListContainer = ({ listNumber, items = [], onSelect, selected, onMoveToNewList, isCreatingList }) => {
+  const itemsToRender = Array.isArray(items) ? items : [];
+  
+  console.log(`List ${listNumber} received items:`, items);
+  console.log(`List ${listNumber} rendering items:`, itemsToRender);
+  
   return (
     <Container>
       <CheckboxLabel>
@@ -42,19 +48,24 @@ const ListContainer = ({ listNumber, items, onSelect, selected }) => {
           checked={selected.includes(listNumber)}
           onChange={() => onSelect(listNumber)}
         />
-      <Title>List {listNumber}</Title>
+        <Title>List {listNumber}</Title>
       </CheckboxLabel>
       
-      {items.map((item) => (
-        <Card key={item.id}>
-          <ListItem
-            item={item}
-            listNumber={listNumber}
-            onSelect={onSelect}
-            isSelected={selected.includes(item.id)}
-          />
-        </Card>
-      ))}
+      {itemsToRender.length > 0 ? (
+        itemsToRender.map((item) => (
+          <Card key={item.id}>
+            <ListItem
+              item={item}
+              listNumber={listNumber}
+              onSelect={onMoveToNewList}
+              isSelected={selected.includes(item.id)}
+              isCreatingList={isCreatingList}
+            />
+          </Card>
+        ))
+      ) : (
+        <Card>No items in this list</Card>
+      )}
     </Container>
   );
 };
